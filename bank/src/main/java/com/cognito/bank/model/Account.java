@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Data
@@ -20,7 +21,7 @@ import java.util.Set;
 @Entity
 public class Account {
     @Id
-    @UUID
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     private BigDecimal balance;
@@ -32,4 +33,34 @@ public class Account {
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "customerId",nullable = false)
     private Customer customer;
+
+    public Account(Customer customer, BigDecimal balance, LocalDateTime creationDate) {
+        this.customer = customer;
+        this.balance = balance;
+        this.creationDate = creationDate;
+    }
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "id='" + id + '\'' +
+                ", balance=" + balance +
+                ", creationDate=" + creationDate +
+                ", transactions=" + transactions +
+                ", customer=" + customer +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Account account = (Account) o;
+        return Objects.equals(id, account.id) && Objects.equals(balance, account.balance) && Objects.equals(creationDate, account.creationDate) && Objects.equals(transactions, account.transactions) && Objects.equals(customer, account.customer);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, balance, creationDate);
+    }
 }
